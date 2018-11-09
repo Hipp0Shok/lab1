@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <fstream>
 #include "setlunch.h"
+#include "food.h"
 
 void dishOutput(Dish existing)
 {

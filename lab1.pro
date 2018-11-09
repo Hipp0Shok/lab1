@@ -5,10 +5,12 @@ CONFIG -= qt
 SOURCES += main.cpp \
     dish.cpp \
     list.cpp \
-    setlunch.cpp
+    setlunch.cpp \
+    food.cpp
 
 HEADERS += \
     dish.h \
     list.h \
-    setlunch.h
+    setlunch.h \
+    food.h
 

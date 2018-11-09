@@ -1,7 +1,9 @@
 #ifndef DISH_H
 #define DISH_H
+#include "D:\study\info\lab1\food.h"
 #include <iostream>
 #include <string>
+
 
 class Dish
 {
@@ -16,21 +18,16 @@ public:
     float getOrganicAcids() const;
     float getAlimentaryFibers() const;
     float getEnergyValueOn100() const;
-    float getWeight() const;
     float getEnergyValueTotal() const;
-    std::string getName() const;
     void changeFats(float const fats);
     void changeProteins(float const proteins);
-    void changeName(const std::string &name);
     void changeCarbohydrates(float  const carbohydrates);
     void changeAlimentaryFibers(float const alimentaryFibers);
     void changeOrganicAcids(float  constorganicAcids);
-    void changeWeight(float  const weight);
     bool operator == (Dish const &);
     bool operator != (Dish const &);
 private:
-    std::string _name;
-    float _fats, _proteins, _carbohydrates, _organicAcids, _alimentaryFibers, _weight;
+    float _fats, _proteins, _carbohydrates, _organicAcids, _alimentaryFibers;
 };
 
 #endif // DISH_H
