@@ -22,7 +22,7 @@ List::Iterator::Iterator(Node *existing):
 
 List::Iterator::~Iterator() = default;
 
-Dish List::Iterator::operator*()
+Base List::Iterator::operator*()
 {
     return *(node->object);
 }
@@ -75,11 +75,11 @@ List::List(const List &existing):
     tail(nullptr)
 {
     Node *newNode, *existingNode = existing.head;
-    Dish *tempDish;
+    Base *tempDish;
     _length = 0;
     if(existing._length)
     {
-        tempDish = new Dish(*(existingNode->object));
+        tempDish = new Base(*(existingNode->object));
         newNode = new Node;
         newNode->object = tempDish;
         newNode->prev = nullptr;
@@ -90,7 +90,7 @@ List::List(const List &existing):
         tail->next = nullptr;
         while(existingNode)
         {
-            tempDish = new Dish(*(existingNode->object));
+            tempDish = new Base(*(existingNode->object));
             tail = new Node;
             newNode->next = tail;
             tail->prev = newNode;
@@ -230,12 +230,12 @@ void List::deleteNode(Iterator &current)
     this->deleteNode(current.node);
 }
 
-Dish List::findDish(const float &energyValue) const
+Base List::findDish(const float &energyValue) const
 {
     Iterator iterator;
     iterator = this->begin();
     iterator++;
-    Dish answer;
+    Base answer;
     answer = *(head->object);
     float difference;
     difference = absoluteDiff(answer.getEnergyValueOn100(), energyValue);
@@ -294,7 +294,7 @@ void List::writeInFile(std::string fileName)
     std::fstream file;
     file.open(fileName, std::ios::out | std::ios::binary);
     List::Iterator iter;
-    Dish temp;
+    Base temp;
     std::string name;
     float fats, proteins, carbohydrates, organicAcids, alimentaryFibers, weight;
     int length;
@@ -340,7 +340,7 @@ void List::readFromFile(std::string fileName)
         file.read(reinterpret_cast<char*>(&length), sizeof (int));
         file.read(reinterpret_cast<char*>(&buffer), length);
         name = buffer;
-        temp.changeName(name);
+        temp.setName(name);
         file.read(reinterpret_cast<char*>(&fats), sizeof (fats));
         temp.changeFats(fats);
         file.read(reinterpret_cast<char*>(&proteins), sizeof (proteins));
@@ -352,7 +352,7 @@ void List::readFromFile(std::string fileName)
         file.read(reinterpret_cast<char*>(&alimentaryFibers), sizeof (alimentaryFibers));
         temp.changeAlimentaryFibers(alimentaryFibers);
         file.read(reinterpret_cast<char*>(&weight), sizeof (weight));
-        temp.changeWeight(weight);
+        temp.setWeight(weight);
         addNode(temp);
        amount--;
     }

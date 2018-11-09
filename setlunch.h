@@ -1,12 +1,15 @@
 #ifndef SETLUNCH_H
 #define SETLUNCH_H
 #include "list.h"
+#include "base.h"
 
 
-class SetLunch : public List
+class SetLunch : public Base
 {
 public:
-    float getEnergyValue();
+    virtual float getEnergyValue() const;
+private:
+    List dishSet;
 };
 
 #endif // SETLUNCH_H

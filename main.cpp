@@ -5,9 +5,9 @@
 #include <assert.h>
 #include <fstream>
 #include "setlunch.h"
-#include "food.h"
+#include "base.h"
 
-void dishOutput(Dish existing)
+void dishOutput(Base existing)
 {
     std::cout << "Name: "<< existing.getName() << std::endl;
     std::cout << "Weight: "<< existing.getWeight() << " grams" << std::endl;
@@ -39,19 +39,19 @@ int main()
 {
     Dish ob0, ob1, ob2, ob3;
     List firstList;
-    ob0.changeName("FIRST");
+    ob0.setName("FIRST");
     ob0.changeFats(40.2F);
-    ob0.changeWeight(258.3F);
+    ob0.setWeight(258.3F);
     ob0.changeCarbohydrates(20.4F);
-    ob0.changeWeight(153.2F);
-    ob1.changeName("SECOND");
+    ob0.setWeight(153.2F);
+    ob1.setName("SECOND");
     ob1.changeFats(80.2F);
-    ob2.changeName("THIRD");
+    ob2.setName("THIRD");
     ob2.changeFats(20.2F);
     ob2.changeOrganicAcids(1.7F);
     ob2.changeProteins(25.13F);
     ob2.changeAlimentaryFibers(2.2F);
-    ob3.changeName("FORTH");
+    ob3.setName("FORTH");
     ob3.changeFats(70.0F);
     int previousLength = firstList.getLength();
     firstList.addNode(ob0);
@@ -78,21 +78,13 @@ int main()
     secondList.writeInFile("FileForTest.dat");
     firstList.readFromFile("FileForTest.dat");
     assert(secondList == firstList);
-    Dish found;
+    Base found;
     found = secondList.findDish(750.0F);
     std::cout << "Finded Dish: " << std::endl;
     dishOutput(found);
     std::cout<<"OK!"<<std::endl;
     Dish ob10(ob1);
+    ob10.getEnergyValueOn100();
     //Лабораторная работа номер 3
-    SetLunch fridayLunch;
-    ob1.changeWeight(250.3F);
-    ob2.changeWeight(325.56F);
-    fridayLunch.addNode(ob1);
-    fridayLunch.addNode(ob2);
-    std::cout << "Set Lunch for Friday:" << std::endl;
-    output(fridayLunch);
-    std::cout << "Energy value: " << std::endl;
-    std::cout << fridayLunch.getEnergyValue() << " kcals" << std::endl;
     return 0;
 }

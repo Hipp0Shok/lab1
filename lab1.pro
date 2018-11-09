@@ -6,11 +6,11 @@ SOURCES += main.cpp \
     dish.cpp \
     list.cpp \
     setlunch.cpp \
-    food.cpp
+    base.cpp
 
 HEADERS += \
     dish.h \
     list.h \
     setlunch.h \
-    food.h
+    base.h
 

@@ -4,7 +4,7 @@
 
 class List
 {
-protected:
+private:
     struct Node;
 public:
     class Iterator
@@ -21,7 +21,7 @@ public:
         Iterator operator --(int);
         bool operator == (Iterator const &) const;
         bool operator != (Iterator const &) const;
-        Dish operator *();
+        Base operator *();
      protected:
         Node *node;
     };
@@ -37,13 +37,13 @@ public:
     virtual Iterator begin() const;
     virtual Iterator end() const;
     virtual int getLength() const;
-    Dish findDish(const float &) const;
+    Base findDish(const float &) const;
     virtual bool operator == (List const &) const;
     virtual bool operator != (List const &) const;
-protected:
+private:
     struct Node
     {
-        Dish* object;
+        Base* object;
         Node *next, *prev;
     };
     void deleteNode(Node*);
