@@ -31,6 +31,7 @@ public:
     List(const List&);
     virtual void addNode(const Dish&);
     virtual void deleteNode(Iterator&);
+    void deleteNode(Dish const &);
     virtual void deleteList();
     virtual void writeInFile(std::string fileName);
     virtual void readFromFile(std::string fileName);

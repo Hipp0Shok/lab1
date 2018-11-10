@@ -8,6 +8,8 @@ class SetLunch : public Base
 {
 public:
     virtual float getEnergyValue() const;
+    void addNode(Dish const &);
+    void deleteNode(List::Iterator const &);
 private:
     List dishSet;
 };

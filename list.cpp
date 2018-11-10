@@ -358,3 +358,15 @@ void List::readFromFile(std::string fileName)
     }
     file.close();
 }
+
+void List::deleteNode(Dish const &existing)
+{
+    Iterator iter;
+    for( iter = begin(); iter != nullptr; iter++)
+    {
+        if((*iter) == existing)
+        {
+            deleteNode(iter);
+        }
+    }
+}
