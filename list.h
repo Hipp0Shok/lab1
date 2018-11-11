@@ -1,6 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
-#include "dish.h"
+#include "setlunch.h"
 
 class List
 {
@@ -21,7 +21,7 @@ public:
         Iterator operator --(int);
         bool operator == (Iterator const &) const;
         bool operator != (Iterator const &) const;
-        Base operator *();
+        Base* operator *();
      protected:
         Node *node;
     };
@@ -29,16 +29,16 @@ public:
     List();
     virtual ~List();
     List(const List&);
-    virtual void addNode(const Dish&);
+    virtual void addNode(const Base*);
     virtual void deleteNode(Iterator&);
-    void deleteNode(Dish const &);
+    void deleteNode(Base*);
     virtual void deleteList();
     virtual void writeInFile(std::string fileName);
     virtual void readFromFile(std::string fileName);
     virtual Iterator begin() const;
     virtual Iterator end() const;
     virtual int getLength() const;
-    Base findDish(const float &) const;
+    Base* findDish(const float &) const;
     virtual bool operator == (List const &) const;
     virtual bool operator != (List const &) const;
 private:

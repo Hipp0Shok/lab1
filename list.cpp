@@ -1,7 +1,28 @@
 #include "list.h"
-#include "dish.h"
 #include <cassert>
 #include <fstream>
+
+Base* factory(Kind kind, Base* existing = nullptr){
+    if(kind == BASE)
+        return nullptr;
+    if(kind == DISH)
+    {
+        if(!existing)
+        {
+            return new Dish;
+        }
+        return new Dish(*dynamic_cast<Dish*>(existing));
+    }
+    if(kind == SETLUNCH)
+    {
+        if(!existing)
+        {
+            return new SetLunch;
+        }
+        return new SetLunch(*dynamic_cast<SetLunch*>(existing));
+    }
+    return nullptr;
+}
 
 float absoluteDiff(float first, float second)
 {
@@ -22,9 +43,9 @@ List::Iterator::Iterator(Node *existing):
 
 List::Iterator::~Iterator() = default;
 
-Base List::Iterator::operator*()
+Base* List::Iterator::operator*()
 {
-    return *(node->object);
+    return node->object;
 }
 
 List::Iterator& List::Iterator::operator++()
@@ -79,7 +100,7 @@ List::List(const List &existing):
     _length = 0;
     if(existing._length)
     {
-        tempDish = new Base(*(existingNode->object));
+        tempDish = factory(existingNode->object->getKind());
         newNode = new Node;
         newNode->object = tempDish;
         newNode->prev = nullptr;
@@ -90,7 +111,7 @@ List::List(const List &existing):
         tail->next = nullptr;
         while(existingNode)
         {
-            tempDish = new Base(*(existingNode->object));
+            tempDish = factory(existingNode->object->getKind());
             tail = new Node;
             newNode->next = tail;
             tail->prev = newNode;
@@ -114,12 +135,13 @@ List::~List()
     }
 }
 
-void List::addNode(const Dish& existing)
+void List::addNode(const Base* existing)
 {
     if(!head)
     {
         head = new Node;
-        head->object = new Dish(existing);
+        head->object = factory(existing->getKind());
+        head->object->operator=(*existing);
         head->next = nullptr;
         head->prev = nullptr;
         tail = head;
@@ -129,12 +151,13 @@ void List::addNode(const Dish& existing)
         Node* temp = head;
         while(temp)
         {
-            if(temp->object->getEnergyValueOn100() > existing.getEnergyValueOn100())
+            if(temp->object->getEnergyValueTotal() > existing->getEnergyValueTotal())
                 break;
             temp = temp->next;
         };
         Node* added = new Node;
-        added->object = new Dish(existing);
+        added->object = factory(existing->getKind());
+        added->object->operator=(*existing);
         if(!temp)
         {
             tail->next = added;
@@ -230,21 +253,21 @@ void List::deleteNode(Iterator &current)
     this->deleteNode(current.node);
 }
 
-Base List::findDish(const float &energyValue) const
+Base* List::findDish(const float &energyValue) const
 {
     Iterator iterator;
     iterator = this->begin();
     iterator++;
-    Base answer;
-    answer = *(head->object);
+    Base* answer;
+    answer = head->object;
     float difference;
-    difference = absoluteDiff(answer.getEnergyValueOn100(), energyValue);
+    difference = absoluteDiff(answer->getEnergyValueTotal(), energyValue);
     for(; iterator != nullptr; iterator++)
     {
-        if(absoluteDiff((*iterator).getEnergyValueOn100(), energyValue) < difference)
+        if(absoluteDiff((*iterator)->getEnergyValueTotal(), energyValue) < difference)
         {
             answer = *iterator;
-            difference = absoluteDiff((*iterator).getEnergyValueOn100(), energyValue);
+            difference = absoluteDiff((*iterator)->getEnergyValueTotal(), energyValue);
         }
     }
     return answer;
@@ -261,7 +284,7 @@ bool List::operator==(List const &existingList) const
     for(firstIterator = Iterator(head), secondIterator = Iterator(existingList.head);
         firstIterator != nullptr; firstIterator++, secondIterator++)
     {
-        if(*firstIterator != *secondIterator)
+        if((*firstIterator)->operator!=( *(*secondIterator)))
         {
             answer = false;
         }
@@ -291,34 +314,22 @@ bool List::operator!=(List const &existingList) const
 
 void List::writeInFile(std::string fileName)
 {
-    std::fstream file;
+    std::ofstream file;
     file.open(fileName, std::ios::out | std::ios::binary);
+    if(!file.is_open())
+        return;
     List::Iterator iter;
-    Base temp;
     std::string name;
-    float fats, proteins, carbohydrates, organicAcids, alimentaryFibers, weight;
     int length;
     length = getLength();
     file.write(reinterpret_cast<char*>(&length), sizeof (int));
     for(iter = end(); iter != nullptr; iter--)
     {
-        temp = *iter;
-        name = temp.getName();
-        length = static_cast<int>(name.size())+1;
-        file.write(reinterpret_cast<char*>(&length), sizeof (int));
-        file.write(name.c_str(), length);
-        fats = temp.getFats();
-        file.write(reinterpret_cast<char*>(&fats), sizeof (fats));
-        proteins = temp.getProteins();
-        file.write(reinterpret_cast<char*>(&proteins), sizeof (proteins));
-        carbohydrates = temp.getCarbohydrates();
-        file.write(reinterpret_cast<char*>(&carbohydrates), sizeof (carbohydrates));
-        organicAcids = temp.getOrganicAcids();
-        file.write(reinterpret_cast<char*>(&organicAcids), sizeof (organicAcids));
-        alimentaryFibers = temp.getAlimentaryFibers();
-        file.write(reinterpret_cast<char*>(&alimentaryFibers), sizeof (alimentaryFibers));
-        weight = temp.getWeight();
-        file.write(reinterpret_cast<char*>(&weight), sizeof (weight));
+        (*iter)->writeKind(file);
+        //Kind temp;
+        //temp = (*iter)->getKind();
+        //file.write(reinterpret_cast<char*>(&temp), sizeof (Kind));
+        (*iter)->write(file);
     }
     file.close();
 }
@@ -326,40 +337,25 @@ void List::writeInFile(std::string fileName)
 void List::readFromFile(std::string fileName)
 {
     deleteList();
-    std::fstream file;
+    std::ifstream file;
     file.open(fileName, std::ios::in | std::ios::binary);
     int amount;
     file.read(reinterpret_cast<char*>(&amount), sizeof(int));
-    Dish temp;
-    char buffer[50];
+    Base* temp;
+    Kind tmpKind;
     std::string name;
-    float fats, proteins, carbohydrates, organicAcids, alimentaryFibers, weight;
-    int length;
     while(amount)
     {
-        file.read(reinterpret_cast<char*>(&length), sizeof (int));
-        file.read(reinterpret_cast<char*>(&buffer), length);
-        name = buffer;
-        temp.setName(name);
-        file.read(reinterpret_cast<char*>(&fats), sizeof (fats));
-        temp.changeFats(fats);
-        file.read(reinterpret_cast<char*>(&proteins), sizeof (proteins));
-        temp.changeProteins(proteins);
-        file.read(reinterpret_cast<char*>(&carbohydrates), sizeof (carbohydrates));
-        temp.changeCarbohydrates(carbohydrates);
-        file.read(reinterpret_cast<char*>(&organicAcids), sizeof (organicAcids));
-        temp.changeOrganicAcids(organicAcids);
-        file.read(reinterpret_cast<char*>(&alimentaryFibers), sizeof (alimentaryFibers));
-        temp.changeAlimentaryFibers(alimentaryFibers);
-        file.read(reinterpret_cast<char*>(&weight), sizeof (weight));
-        temp.setWeight(weight);
+        tmpKind = Base::readKind(file);
+        temp = factory(tmpKind);
+        temp->read(file);
         addNode(temp);
        amount--;
     }
     file.close();
 }
 
-void List::deleteNode(Dish const &existing)
+void List::deleteNode(Base *existing)
 {
     Iterator iter;
     for( iter = begin(); iter != nullptr; iter++)

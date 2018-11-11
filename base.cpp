@@ -1,23 +1,24 @@
 #include "base.h"
 #include "iostream"
 #include "string.h"
+#include "fstream"
 
 Base::Base():
-    _name("Water"),
+    _kind(BASE),
     _fats(0.0F),
     _proteins(0.0F),
     _carbohydrates(0.0F),
     _organicAcids(0.0F),
-        _alimentaryFibers(0.0F),
+    _alimentaryFibers(0.0F),
     _weight(0.0F)
 {
 
 }
 
 
-Base::Base(std::string const &name, float const &fats, const float &proteins, const float &carbohydrates,
+Base::Base(float const &fats, const float &proteins, const float &carbohydrates,
            const float &organicAcids, const float &alimentaryFibers, const float &weight):
-    _name(!name.empty() ? name : "Water"),
+    _kind(BASE),
     _fats(fats > 0 && fats <= 100 ? fats : 0),
     _proteins(proteins > 0 && proteins <= 100 ? proteins : 0),
     _carbohydrates(carbohydrates > 0 && carbohydrates <= 100 ? carbohydrates : 0),
@@ -28,7 +29,7 @@ Base::Base(std::string const &name, float const &fats, const float &proteins, co
 }
 
 Base::Base(Base const &existing):
-    _name(existing._name),
+    _kind(BASE),
     _fats(existing._fats),
     _proteins(existing._proteins),
     _carbohydrates(existing._carbohydrates),
@@ -39,31 +40,10 @@ Base::Base(Base const &existing):
 
 }
 
-float Base::getEnergyValueOn100() const
-{
-    return 9.29F*_fats + 4.1F*_proteins + 4.1F*_carbohydrates +
-                2.2F*_organicAcids + 1.9F*_alimentaryFibers;
-}
-
 float Base::getEnergyValueTotal() const
 {
-    return getEnergyValueOn100()*_weight/100;
-}
-
-void Base::setName(std::string const &name)
-{
-    if(!name.empty())
-    {
-        _name = name;
-    }
-}
-
-void Base::setWeight(float const &weight)
-{
-    if(weight >= 0)
-    {
-        _weight = weight;
-    }
+    return (9.29F*_fats + 4.1F*_proteins + 4.1F*_carbohydrates +
+            2.2F*_organicAcids + 1.9F*_alimentaryFibers) * _weight;
 }
 
 Base::~Base()
@@ -73,8 +53,7 @@ Base::~Base()
 
 bool Base::operator == (Base const & existing)
 {
-    return( this->_name == existing._name &&
-            this->_fats == existing._fats &&
+    return( this->_fats == existing._fats &&
             this->_proteins == existing._proteins &&
             this->_carbohydrates == existing._carbohydrates &&
             this->_organicAcids == existing._organicAcids &&
@@ -85,4 +64,51 @@ bool Base::operator == (Base const & existing)
 bool Base::operator!=( Base const &existing)
 {
     return !(*this == existing);
+}
+
+void Base::writeKind(std::ofstream &file)
+{
+    Kind temp = getKind();
+    file.write(reinterpret_cast<char*>(&temp), sizeof (Kind));
+}
+
+Kind Base::readKind(std::ifstream &file)
+{
+    Kind answer;
+    file.read(reinterpret_cast<char*>(&answer), sizeof (Kind));
+    return answer;
+}
+
+void Base::write(std::ofstream &file)
+{
+    file.write(reinterpret_cast<char*>(&_fats), sizeof (float));
+    file.write(reinterpret_cast<char*>(&_proteins), sizeof (float));
+    file.write(reinterpret_cast<char*>(&_carbohydrates), sizeof (float));
+    file.write(reinterpret_cast<char*>(&_organicAcids), sizeof (float));
+    file.write(reinterpret_cast<char*>(&_alimentaryFibers), sizeof (float));
+    file.write(reinterpret_cast<char*>(&_weight), sizeof (float));
+}
+
+void Base::read(std::ifstream &file)
+{
+    file.read(reinterpret_cast<char*>(&_fats), sizeof (float));
+    file.read(reinterpret_cast<char*>(&_proteins), sizeof (float));
+    file.read(reinterpret_cast<char*>(&_carbohydrates), sizeof (float));
+    file.read(reinterpret_cast<char*>(&_organicAcids), sizeof (float));
+    file.read(reinterpret_cast<char*>(&_alimentaryFibers), sizeof (float));
+    file.read(reinterpret_cast<char*>(&_weight), sizeof (float));
+}
+
+Base& Base::operator = (Base const &existing)
+{
+    if(this == &existing)
+        return *this;
+    _kind = existing._kind;
+    _fats = existing._fats;
+    _proteins = existing._proteins;
+    _carbohydrates = existing._carbohydrates;
+    _organicAcids = existing._organicAcids;
+    _alimentaryFibers = existing._alimentaryFibers;
+    _weight = existing._weight;
+    return *this;
 }
