@@ -1,8 +1,6 @@
 #ifndef DISH_H
 #define DISH_H
 #include "base.h"
-#include <iostream>
-#include <cstring>
 
 class Dish: public Base
 {
@@ -20,8 +18,8 @@ public:
     void setWeight(float const &);
     std::string getName() const { return _name;}
     void setName(std::string const &);
-    bool operator == (Dish const &);
-    bool operator != (Dish const &);
+    bool operator == (Dish const &) const;
+    bool operator != (Dish const &) const ;
     Base& operator = (Base const &);
     Dish& operator = (Dish const &);
     void write(std::ofstream &);

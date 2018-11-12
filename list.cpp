@@ -2,24 +2,16 @@
 #include <cassert>
 #include <fstream>
 
-Base* factory(Kind kind, Base* existing = nullptr){
+Base* factory(Kind kind){
     if(kind == BASE)
         return nullptr;
     if(kind == DISH)
     {
-        if(!existing)
-        {
             return new Dish;
-        }
-        return new Dish(*dynamic_cast<Dish*>(existing));
     }
     if(kind == SETLUNCH)
     {
-        if(!existing)
-        {
             return new SetLunch;
-        }
-        return new SetLunch(*dynamic_cast<SetLunch*>(existing));
     }
     return nullptr;
 }
@@ -101,6 +93,7 @@ List::List(const List &existing):
     if(existing._length)
     {
         tempDish = factory(existingNode->object->getKind());
+        *tempDish = *(existingNode->object);
         newNode = new Node;
         newNode->object = tempDish;
         newNode->prev = nullptr;
@@ -112,6 +105,7 @@ List::List(const List &existing):
         while(existingNode)
         {
             tempDish = factory(existingNode->object->getKind());
+            *tempDish = *(existingNode->object);
             tail = new Node;
             newNode->next = tail;
             tail->prev = newNode;
@@ -253,7 +247,7 @@ void List::deleteNode(Iterator &current)
     this->deleteNode(current.node);
 }
 
-Base* List::findDish(const float &energyValue) const
+Base *List::findDish(const float &energyValue) const
 {
     Iterator iterator;
     iterator = this->begin();
@@ -280,16 +274,32 @@ bool List::operator==(List const &existingList) const
     {
         return false;
     }
-    bool answer = true;
     for(firstIterator = Iterator(head), secondIterator = Iterator(existingList.head);
         firstIterator != nullptr; firstIterator++, secondIterator++)
     {
-        if((*firstIterator)->operator!=( *(*secondIterator)))
+        if((*firstIterator)->getKind() != (*secondIterator)->getKind())
         {
-            answer = false;
+            return false;
+        }
+        else
+        {
+            if((*firstIterator)->getKind() == DISH)
+            {
+                if(*(dynamic_cast<Dish*>(*firstIterator)) != *dynamic_cast<Dish*>(*secondIterator))
+                {
+                    return false;
+                }
+            }
+            if((*firstIterator)->getKind() == SETLUNCH)
+            {
+                if(*dynamic_cast<SetLunch*>(*firstIterator) != *dynamic_cast<SetLunch*>(*secondIterator))
+                {
+                    return false;
+                }
+            }
         }
     }
-    return answer;
+    return true;
 }
 
 bool List::operator!=(List const &existingList) const
@@ -326,9 +336,6 @@ void List::writeInFile(std::string fileName)
     for(iter = end(); iter != nullptr; iter--)
     {
         (*iter)->writeKind(file);
-        //Kind temp;
-        //temp = (*iter)->getKind();
-        //file.write(reinterpret_cast<char*>(&temp), sizeof (Kind));
         (*iter)->write(file);
     }
     file.close();

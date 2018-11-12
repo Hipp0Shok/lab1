@@ -1,35 +1,52 @@
-#include <iostream>
-#include <string>
 #include <assert.h>
-#include <fstream>
 #include "list.h"
+#include <cassert>
 
 int main()
 {
-    Dish ob0;
-    ob0.setFats(57.3F);
-    ob0.setWeight(25);
-    std::cout << ob0.getEnergyValueOn100() << ob0.getEnergyValueTotal() << std::endl;
-    Dish ob2(ob0);
-    ob0.setName("First");
-    ob2.setName("Second");
-    ob2.setCarbohydrates(27.3F);
-    Dish ob1("Bread", 12.2F, 15.3F, 2.2F, 3.1F, 17.0F, 25.1F);
-    SetLunch complex;
-    complex.setSoup(ob0);
-    complex.setMainCourse(ob1);
-    complex.setDessert(ob2);
-    complex.setDay(TUESDAY);
-    std::cout << ob0.getKind() << std::endl;
-    std::cout << ob1.getKind()<< std::endl;
-    std::cout << ob2.getKind() << std::endl;
-    std::cout << complex.getKind() << std::endl;
-    List foo;
-    foo.addNode(&ob2);
-    foo.addNode(&complex);
-    //foo.writeInFile("TestFile2.dat");
-    List bar;
-    bar.readFromFile("TestFile2.dat");
-    assert(foo == bar);
+    Dish first, third;
+    first.setName("Salad");
+    first.setFats(3.2F);
+    first.setCarbohydrates(15.7F);
+    first.setAlimentaryFibers(41.0F);
+    first.setOrganicAcids(25.4F);
+    first.setProteins(8.3F);
+    first.setWeight(250);
+    Dish second(first);
+    assert(second == first);
+    second.setName("Soup");
+    second.setFats(22.2F);
+    second.setCarbohydrates(28.7F);
+    second.setAlimentaryFibers(5.0F);
+    second.setOrganicAcids(3.4F);
+    second.setProteins(43.3F);
+    second.setWeight(500);
+    third.setName("Cake");
+    third.setFats(24.2F);
+    third.setCarbohydrates(3.7F);
+    third.setAlimentaryFibers(18.0F);
+    third.setOrganicAcids(25.4F);
+    third.setProteins(8.3F);
+    third.setWeight(250);
+    SetLunch monday;
+    monday.setDay(MONDAY);
+    monday.setSoup(first);
+    monday.setMainCourse(second);
+    monday.setDessert(third);
+    SetLunch tuesday(monday);
+    assert(tuesday == monday);
+    tuesday.setDay(TUESDAY);
+    List menu;
+    menu.addNode(&first);
+    menu.addNode(&second);
+    menu.addNode(&third);
+    menu.addNode(&monday);
+    menu.addNode(&tuesday);
+    List secondMenu(menu);
+    assert(secondMenu == menu);
+    secondMenu.deleteList();
+    menu.writeInFile("Data.dat");
+    secondMenu.readFromFile("Data.dat");
+    assert(menu == secondMenu);
     return 0;
 }

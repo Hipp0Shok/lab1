@@ -10,8 +10,8 @@ public:
     ~SetLunch();
     SetLunch(Days &, Dish &, Dish &, Dish&);
     SetLunch(SetLunch &);
-    bool operator == (SetLunch const &);
-    bool operator != (SetLunch const &);
+    bool operator == (SetLunch const &) const;
+    bool operator != (SetLunch const &) const;
     float getEnergyValueTotal() const;
     void setSoup(Dish const &);
     void setMainCourse(Dish const &);

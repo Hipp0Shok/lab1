@@ -1,7 +1,7 @@
 #ifndef BASE_H
 #define BASE_H
-#include "iostream"
-#include "string.h"
+#include <iostream>
+#include <cstring>
 #include "fstream"
 enum Kind {BASE, DISH, SETLUNCH};
 
@@ -20,8 +20,8 @@ public:
     float getCarbohydrates() const { return _carbohydrates;}
     float getOrganicAcids() const { return _organicAcids;}
     float getAlimentaryFibers() const { return _alimentaryFibers;}
-    virtual bool operator == (Base const &);
-    virtual bool operator != (Base const &);
+    virtual bool operator == (Base const &) const;
+    virtual bool operator != (Base const &) const;
     virtual Kind getKind() const {return _kind;}
     virtual void writeKind(std::ofstream &);
     static Kind readKind(std::ifstream &);

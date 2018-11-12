@@ -81,7 +81,7 @@ void Dish::setName(std::string const &name)
     }
 }
 
-bool Dish::operator == (Dish const &existing)
+bool Dish::operator == (Dish const &existing) const
 {
     if(Base::operator==(existing) && _name == existing._name)
     {
@@ -93,7 +93,7 @@ bool Dish::operator == (Dish const &existing)
     }
 }
 
-bool Dish::operator!=(Dish const &existing)
+bool Dish::operator!=(Dish const &existing) const
 {
     if(Base::operator!=(existing) || _name != existing._name)
     {

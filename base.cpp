@@ -51,7 +51,7 @@ Base::~Base()
 
 }
 
-bool Base::operator == (Base const & existing)
+bool Base::operator == (Base const & existing) const
 {
     return( this->_fats == existing._fats &&
             this->_proteins == existing._proteins &&
@@ -61,7 +61,7 @@ bool Base::operator == (Base const & existing)
             this->_weight == existing._weight);
 }
 
-bool Base::operator!=( Base const &existing)
+bool Base::operator!=( Base const &existing) const
 {
     return !(*this == existing);
 }

@@ -118,7 +118,7 @@ void SetLunch::read(std::ifstream &file)
     file.read(reinterpret_cast<char*>(&_currentDay), sizeof (Days));
 }
 
-bool SetLunch::operator==(SetLunch const &existing)
+bool SetLunch::operator==(SetLunch const &existing) const
 {
     if(Base::operator==(existing) && _soup == existing._soup &&
             _mainCourse == existing._mainCourse && _dessert == existing._dessert)
@@ -131,7 +131,7 @@ bool SetLunch::operator==(SetLunch const &existing)
     }
 }
 
-bool SetLunch::operator!=(SetLunch const &existing)
+bool SetLunch::operator!=(SetLunch const &existing) const
 {
     if(!(operator==(existing)))
     {
