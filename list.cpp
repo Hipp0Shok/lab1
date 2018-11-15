@@ -26,7 +26,11 @@ List::Iterator::Iterator():
 {
 }
 
-List::Iterator::Iterator(const Iterator&) = default;
+List::Iterator::Iterator(const Iterator& existing):
+    node(existing.node)
+{
+
+}
 
 List::Iterator::Iterator(Node *existing):
     node(existing)
@@ -35,7 +39,7 @@ List::Iterator::Iterator(Node *existing):
 
 List::Iterator::~Iterator() = default;
 
-Base* List::Iterator::operator*()
+const Base *List::Iterator::operator *()
 {
     return node->object;
 }
@@ -129,13 +133,23 @@ List::~List()
     }
 }
 
+void List::addNode(const Dish existing)
+{
+    addNode(&existing);
+}
+
+void List::addNode(const SetLunch existing)
+{
+    addNode(&existing);
+}
+
 void List::addNode(const Base* existing)
 {
     if(!head)
     {
         head = new Node;
         head->object = factory(existing->getKind());
-        head->object->operator=(*existing);
+        *(head->object) = *existing;
         head->next = nullptr;
         head->prev = nullptr;
         tail = head;
@@ -151,7 +165,7 @@ void List::addNode(const Base* existing)
         };
         Node* added = new Node;
         added->object = factory(existing->getKind());
-        added->object->operator=(*existing);
+        *(added->object) = *existing;
         if(!temp)
         {
             tail->next = added;
@@ -186,8 +200,15 @@ void List::deleteNode(Node* existing)
         {
             if(temp == head)
             {
-                head = temp->next;
-                head->prev = nullptr;
+                if(head != tail)
+                {
+                    head = temp->next;
+                    head->prev = nullptr;
+                }
+                else
+                {
+                    head = tail = nullptr;
+                }
             }
             else
             {
@@ -212,6 +233,42 @@ void List::deleteNode(Node* existing)
         }
     }while(temp);
 }
+
+void List::deleteNode(const Dish existing)
+{
+    List::Iterator iter;
+    iter = begin();
+    for(;iter != nullptr; iter++)
+    {
+        if((*iter)->getKind() == existing.getKind())
+        {
+            if(*dynamic_cast<const Dish*>(*iter) == existing)
+            {
+                deleteNode(iter);
+                break;
+            }
+        }
+    }
+
+}
+
+void List::deleteNode(const SetLunch existing)
+{
+    List::Iterator iter;
+    iter = begin();
+    for(;iter != nullptr; iter++)
+    {
+        if((*iter)->getKind() == existing.getKind())
+        {
+            if(*dynamic_cast<const SetLunch*>(*iter) == existing)
+            {
+                deleteNode(iter);
+                break;
+            }
+        }
+    }
+}
+
 
 void List::deleteList()
 {
@@ -244,15 +301,17 @@ List::Iterator List::end() const
 
 void List::deleteNode(Iterator &current)
 {
+    Node* save = current.node->prev;
     this->deleteNode(current.node);
+    current.node = save;
 }
 
-Base *List::findDish(const float &energyValue) const
+const Base* List::findDish(const float &energyValue) const
 {
     Iterator iterator;
     iterator = this->begin();
     iterator++;
-    Base* answer;
+    const Base* answer;
     answer = head->object;
     float difference;
     difference = absoluteDiff(answer->getEnergyValueTotal(), energyValue);
@@ -283,19 +342,20 @@ bool List::operator==(List const &existingList) const
         }
         else
         {
-            if((*firstIterator)->getKind() == DISH)
+            switch((*firstIterator)->getKind())
             {
-                if(*(dynamic_cast<Dish*>(*firstIterator)) != *dynamic_cast<Dish*>(*secondIterator))
+            case(DISH):
+                if(*(dynamic_cast<const Dish*>(*firstIterator)) != *dynamic_cast< const Dish*>(*secondIterator))
                 {
                     return false;
                 }
-            }
-            if((*firstIterator)->getKind() == SETLUNCH)
-            {
-                if(*dynamic_cast<SetLunch*>(*firstIterator) != *dynamic_cast<SetLunch*>(*secondIterator))
+                break;
+            case(SETLUNCH):
+                if(*dynamic_cast<const SetLunch*>(*firstIterator) != *dynamic_cast<const SetLunch*>(*secondIterator))
                 {
                     return false;
                 }
+                break;
             }
         }
     }
@@ -362,7 +422,7 @@ void List::readFromFile(std::string fileName)
     file.close();
 }
 
-void List::deleteNode(Base *existing)
+void List::deleteNode(const Base *existing)
 {
     Iterator iter;
     for( iter = begin(); iter != nullptr; iter++)
@@ -370,6 +430,7 @@ void List::deleteNode(Base *existing)
         if((*iter) == existing)
         {
             deleteNode(iter);
+            break;
         }
     }
 }
