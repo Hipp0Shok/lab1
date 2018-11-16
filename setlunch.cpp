@@ -1,5 +1,6 @@
 #include "setlunch.h"
 
+
 SetLunch::SetLunch()
 {
 }
@@ -94,14 +95,15 @@ Base& SetLunch::operator = (Base const &existing)
     return *this;
 }
 
-std::string SetLunch::getWeightTotal() const
+QString SetLunch::getWeightTotal() const
 {
-    std::string weight;
-    weight = std::to_string(_soup.getWeight()) + '/' + std::to_string(_mainCourse.getWeight())
-           + '/' + std::to_string(_dessert.getWeight());
-    return(weight);
+    return(QString::number(_soup.getWeight()) + '/' +
+           QString::number(_mainCourse.getWeight()) + '/' +
+           QString::number(_dessert.getWeight()));
 }
-std::string SetLunch::getNameTotal() const
+QString SetLunch::getNameTotal() const
 {
-    return(_soup.getName() + '/' + _mainCourse.getName() + '/' + _dessert.getName());
+    return(QString::fromStdString(_soup.getName() + '/' +
+           _mainCourse.getName() + '/' +
+           _dessert.getName()));
 }

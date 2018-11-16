@@ -1,6 +1,7 @@
 #ifndef SETLUNCH_H
 #define SETLUNCH_H
 #include "dish.h"
+#include "QString"
 
 class SetLunch: public Base
 {
@@ -23,8 +24,8 @@ public:
     Kind getKind() const {return SETLUNCH;}
     SetLunch& operator = (SetLunch const &);
     Base& operator = (Base const &);
-    std::string getWeightTotal() const;
-    std::string getNameTotal() const;
+    QString getWeightTotal() const;
+    QString getNameTotal() const;
 private:
     Dish _soup, _mainCourse, _dessert;
 };
