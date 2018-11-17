@@ -434,3 +434,53 @@ void List::deleteNode(const Base *existing)
         }
     }
 }
+
+const Base* List::findDishByName(const std::string &name)
+{
+    List::Iterator iter;
+    iter = begin();
+    for( ; iter != nullptr; iter++)
+    {
+        if((*iter)->getKind() == DISH)
+        {
+            if(dynamic_cast<const Dish*>((*iter))->getName() == name)
+            {
+                return *iter;
+            }
+        }
+        else
+        {
+            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == QString::fromStdString(name))
+            {
+                return *iter;
+            }
+        }
+    }
+    return nullptr;
+}
+
+const Base* List::findByNameAndEnergy(const float& energy, const std::string & name)
+{
+    List::Iterator iter;
+    iter = begin();
+    for( ; iter != nullptr; iter++)
+    {
+        if((*iter)->getKind() == DISH)
+        {
+            if(dynamic_cast<const Dish*>((*iter))->getName() == name &&
+                    dynamic_cast<const Dish*>((*iter))->getEnergyValueTotal() == energy)
+            {
+                return *iter;
+            }
+        }
+        else
+        {
+            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == QString::fromStdString(name) &&
+                    (*iter)->getEnergyValueTotal() == energy)
+            {
+                return *iter;
+            }
+        }
+    }
+    return nullptr;
+}

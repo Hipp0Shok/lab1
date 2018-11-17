@@ -43,6 +43,8 @@ public:
     Iterator end() const;
     int getLength() const;
     const Base* findDish(const float &) const;
+    const Base* findDishByName(const std::string &);
+    const Base* findByNameAndEnergy(const float&, const std::string &);
     bool operator == (List const &) const;
     bool operator != (List const &) const;
 private:
