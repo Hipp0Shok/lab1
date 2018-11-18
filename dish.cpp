@@ -129,7 +129,7 @@ void Dish::write(std::ofstream &file) const
     file.write(reinterpret_cast<const char*>(&_organicAcids), sizeof (float));
     file.write(reinterpret_cast<const char*>(&_alimentaryFibers), sizeof (float));
     file.write(reinterpret_cast<const char*>(&_weight), sizeof (float));
-    int length = static_cast<int>(_name.length()) + 1;
+    int length = _name.toStdString().length() + 1;
     file.write(reinterpret_cast<char*>(&length), sizeof (int));
     file.write(_name.toStdString().c_str(), length);
 }
@@ -145,8 +145,8 @@ void Dish::read(std::ifstream &file)
     int length;
     char *buffer = new char[50];
     file.read(reinterpret_cast<char*>(&length), sizeof (int));
-    file.read(reinterpret_cast<char*>(buffer), length);
-    _name = buffer;
+    file.read(buffer, length);
+    _name = QString::fromLocal8Bit(buffer, length);
     delete [] buffer;
 }
 
