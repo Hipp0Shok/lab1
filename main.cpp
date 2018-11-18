@@ -33,7 +33,10 @@ int main()
     menu.addNode(second);
     menu.addNode(third);
     SetLunch today(first, second, third);
+    List secondMenu;
     menu.addNode(today);
     menu.writeInFile("AnotherOneMenu.dat");
+    secondMenu.readFromFile("AnotherOneMenu.dat");
+    assert(menu == secondMenu);
     return 0;
 }

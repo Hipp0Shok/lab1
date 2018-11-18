@@ -103,7 +103,7 @@ QString SetLunch::getWeightTotal() const
 }
 QString SetLunch::getNameTotal() const
 {
-    return(QString::fromStdString(_soup.getName() + '/' +
+    return(_soup.getName() + '/' +
            _mainCourse.getName() + '/' +
-           _dessert.getName()));
+           _dessert.getName());
 }

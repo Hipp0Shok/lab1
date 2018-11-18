@@ -1,7 +1,6 @@
 #ifndef SETLUNCH_H
 #define SETLUNCH_H
 #include "dish.h"
-#include "QString"
 
 class SetLunch: public Base
 {

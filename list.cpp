@@ -382,10 +382,10 @@ bool List::operator!=(List const &existingList) const
     return answer;
 }
 
-void List::writeInFile(std::string fileName)
+void List::writeInFile(QString fileName)
 {
     std::ofstream file;
-    file.open(fileName, std::ios::out | std::ios::binary);
+    file.open(fileName.toStdString(), std::ios::out | std::ios::binary);
     if(!file.is_open())
         return;
     List::Iterator iter;
@@ -401,11 +401,11 @@ void List::writeInFile(std::string fileName)
     file.close();
 }
 
-void List::readFromFile(std::string fileName)
+void List::readFromFile(QString fileName)
 {
     deleteList();
     std::ifstream file;
-    file.open(fileName, std::ios::in | std::ios::binary);
+    file.open(fileName.toStdString(), std::ios::in | std::ios::binary);
     int amount;
     file.read(reinterpret_cast<char*>(&amount), sizeof(int));
     Base* temp;
@@ -435,7 +435,7 @@ void List::deleteNode(const Base *existing)
     }
 }
 
-const Base* List::findDishByName(const std::string &name)
+const Base* List::findDishByName(const QString &name)
 {
     List::Iterator iter;
     iter = begin();
@@ -450,7 +450,7 @@ const Base* List::findDishByName(const std::string &name)
         }
         else
         {
-            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == QString::fromStdString(name))
+            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == name)
             {
                 return *iter;
             }
@@ -459,7 +459,7 @@ const Base* List::findDishByName(const std::string &name)
     return nullptr;
 }
 
-const Base* List::findByNameAndEnergy(const float& energy, const std::string & name)
+const Base* List::findByNameAndEnergy(const float& energy, const QString & name)
 {
     List::Iterator iter;
     iter = begin();
@@ -468,15 +468,15 @@ const Base* List::findByNameAndEnergy(const float& energy, const std::string & n
         if((*iter)->getKind() == DISH)
         {
             if(dynamic_cast<const Dish*>((*iter))->getName() == name &&
-                    dynamic_cast<const Dish*>((*iter))->getEnergyValueTotal() == energy)
+                    qFuzzyCompare( dynamic_cast<const Dish*>((*iter))->getEnergyValueTotal(), energy))
             {
                 return *iter;
             }
         }
         else
         {
-            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == QString::fromStdString(name) &&
-                    (*iter)->getEnergyValueTotal() == energy)
+            if(dynamic_cast<const SetLunch*>(*iter)->getNameTotal() == name &&
+                    qFuzzyCompare((*iter)->getEnergyValueTotal(), energy))
             {
                 return *iter;
             }

@@ -1,12 +1,13 @@
 #ifndef DISH_H
 #define DISH_H
 #include "base.h"
+#include "QString"
 
 class Dish: public Base
 {
 public:
     Dish();
-    Dish(std::string const &, float const &, float const &, float const &, float const &, float const &, float const &);
+    Dish(QString const &, float const &, float const &, float const &, float const &, float const &, float const &);
     Dish(Dish const &);
     ~Dish();
     float getEnergyValueOn100() const;
@@ -23,8 +24,8 @@ public:
     float getCarbohydrates() const { return _carbohydrates;}
     float getOrganicAcids() const { return _organicAcids;}
     float getAlimentaryFibers() const { return _alimentaryFibers;}
-    std::string getName() const { return _name;}
-    void setName(std::string const &);
+    QString getName() const { return _name;}
+    void setName(QString const &);
     bool operator == (Dish const &) const;
     bool operator != (Dish const &) const ;
     Dish& operator = (Dish const &);
@@ -33,7 +34,7 @@ public:
     Kind getKind() const {return DISH;}
     Base& operator = (Base const &);
 private:
-    std::string _name;
+    QString _name;
     float _fats, _proteins, _carbohydrates, _organicAcids, _alimentaryFibers, _weight;
 };
 

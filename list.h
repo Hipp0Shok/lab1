@@ -37,14 +37,14 @@ public:
     void deleteNode(const Dish);
     void deleteNode(const SetLunch);
     void deleteList();
-    void writeInFile(std::string fileName);
-    void readFromFile(std::string fileName);
+    void writeInFile(QString fileName);
+    void readFromFile(QString fileName);
     Iterator begin() const;
     Iterator end() const;
     int getLength() const;
     const Base* findDish(const float &) const;
-    const Base* findDishByName(const std::string &);
-    const Base* findByNameAndEnergy(const float&, const std::string &);
+    const Base* findDishByName(const QString &);
+    const Base* findByNameAndEnergy(const float&, const QString &);
     bool operator == (List const &) const;
     bool operator != (List const &) const;
 private:
