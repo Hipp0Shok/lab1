@@ -1,6 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
-#include "dish.h"
+#include "setlunch.h"
 
 class List
 {
@@ -21,26 +21,32 @@ public:
         Iterator operator --(int);
         bool operator == (Iterator const &) const;
         bool operator != (Iterator const &) const;
-        Base operator *();
+        const Base* operator *();
      protected:
         Node *node;
     };
     friend Iterator;
     List();
-    virtual ~List();
+    ~List();
     List(const List&);
-    virtual void addNode(const Dish&);
-    virtual void deleteNode(Iterator&);
-    void deleteNode(Dish const &);
-    virtual void deleteList();
-    virtual void writeInFile(std::string fileName);
-    virtual void readFromFile(std::string fileName);
-    virtual Iterator begin() const;
-    virtual Iterator end() const;
-    virtual int getLength() const;
-    Base findDish(const float &) const;
-    virtual bool operator == (List const &) const;
-    virtual bool operator != (List const &) const;
+    void addNode(const Dish);
+    void addNode(const SetLunch);
+    void addNode(const Base*);
+    void deleteNode(Iterator&);
+    void deleteNode(const Base*);
+    void deleteNode(const Dish);
+    void deleteNode(const SetLunch);
+    void deleteList();
+    void writeInFile(QString fileName);
+    void readFromFile(QString fileName);
+    Iterator begin() const;
+    Iterator end() const;
+    int getLength() const;
+    const Base* findDish(const float &) const;
+    const Base* findDishByName(const QString &);
+    const Base* findByNameAndEnergy(const float&, const QString &);
+    bool operator == (List const &) const;
+    bool operator != (List const &) const;
 private:
     struct Node
     {

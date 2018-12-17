@@ -1,16 +1,16 @@
 TEMPLATE = app
 CONFIG += console
-CONFIG -= qt
 
-SOURCES += main.cpp \
+SOURCES += \
+    base.cpp \
     dish.cpp \
-    list.cpp \
     setlunch.cpp \
-    base.cpp
+    list.cpp \
+    main.cpp
 
 HEADERS += \
+    base.h \
     dish.h \
-    list.h \
     setlunch.h \
-    base.h
+    list.h
 
